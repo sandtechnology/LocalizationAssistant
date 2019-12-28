@@ -1,8 +1,6 @@
 package pers.gwyog.localizationassistant;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
+import javax.swing.*;
 
 public class ProgressWindow extends JFrame {
 
@@ -45,7 +43,7 @@ public class ProgressWindow extends JFrame {
 
     public void addValue() {
         stageNumber += 1;
-        progressValue += 100 / maxStageNumber;
+        progressValue += 100.0 / maxStageNumber;
         System.out.println(progressValue);
         if (stageNumber == maxStageNumber) {
             progressBar.setValue(100);

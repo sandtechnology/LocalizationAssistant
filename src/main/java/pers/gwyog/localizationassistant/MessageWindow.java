@@ -1,13 +1,9 @@
 package pers.gwyog.localizationassistant;
 
-import java.awt.Font;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 public class MessageWindow extends JFrame implements ActionListener {
 
@@ -30,18 +26,18 @@ public class MessageWindow extends JFrame implements ActionListener {
         int icon_size = 40;
         switch (imageType) {
         case -1:
-            directory = "src/main/resources/error.png";
+            directory = "img/error.png";
             message = messageOrigin;
             button = new JButton("确定");
             button_flag = 1;
             break;
         case 0: // to-change
-            directory = "src/main/resources/loading.gif";
+            directory = "img/loading.gif";
             icon_size = 70;
             message = "waiting...";
             break;
         case 1:
-            directory = "src/main/resources/complete.png";
+            directory = "img/complete.png";
             message = "Done!";
             button = new JButton("确定");
             button_flag = 1;
@@ -59,7 +55,7 @@ public class MessageWindow extends JFrame implements ActionListener {
         this.setLayout(null);
         this.getContentPane().add(imageLabel);
         this.getContentPane().add(label);
-        label.setFont(new Font("微软雅黑", 1, 16));
+        label.setFont(new Font("微软雅黑", Font.BOLD, 16));
         if (button_flag == 1) {
             imageLabel.setBounds(-25, -20, 128, 128);
             label.setBounds(70, -7, 250, 100);
@@ -68,7 +64,7 @@ public class MessageWindow extends JFrame implements ActionListener {
             button.addActionListener(this);
         } else {
             imageLabel.setBounds(-15, -10, 128, 128);
-            label.setBounds(140, 3, 250, 100);
+            label.setBounds(140, 3, 2500, 100);
         }
         this.setVisible(true);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

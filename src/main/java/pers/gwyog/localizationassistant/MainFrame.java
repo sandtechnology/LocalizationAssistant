@@ -1,35 +1,23 @@
 package pers.gwyog.localizationassistant;
 
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
+import pers.gwyog.localizationassistant.utils.ContainerUtils;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 
 public class MainFrame extends JFrame implements ActionListener {
 
     /*
      * LA主窗体的GUI布置和事件监听及实现
-     * 
+     *
      * @Author: JJN(GWYOG)
      */
 
     private static final long serialVersionUID = 1L;
-    private JPanel panel1, panel2, panel3, panel4, panel5, panel6, panel7; // 选项卡对应的面板
-    private JPanel panel1_1, panel1_2;
+    private JPanel infoPanel, replacePanel, insertPanel, renewPanel, conditionDeletePanel, translationReplacePanel, wordRatePanel; // 选项卡对应的面板
+    private JPanel infoHolder, exitHolder;
     private JPanel panel2_1, panel2_2, panel2_3, panel2_3_1, panel2_3_2, panel2_warning, panel2_4, panel2_5, panel2_6,
             panel2_7;
     private JPanel panel3_1, panel3_2, panel3_3, panel3_3_1, panel3_3_2, panel3_4, panel3_5, panel3_6, panel3_7;
@@ -37,21 +25,21 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel panel5_1, panel5_2, panel5_3, panel5_4, panel5_5, panel5_6, panel5_7;
     private JPanel panel6_1, panel6_2, panel6_3, panel6_4, panel6_5, panel6_6, panel6_7;
     private JPanel panel7_1, panel7_2, panel7_3, panel7_4;
-    private JButton button1, button2, button2_go, button2_open1, button2_open2;
+    private JButton button1, exitButton, button2_go, button2_open1, button2_open2;
     private JButton button3_open1, button3_open2, button3_go;
     private JButton button4_open1, button4_open2, button4_open3, button4_open4, button4_go;
     private JButton button5_open1, button5_open2, button5_go;
     private JButton button6_open1, button6_open2, button6_open3, button6_open4, button6_go;
     private JButton button7_open1, button7_open2, button7_go;
-    private JLabel label1_1;
-    private JLabel label2_1, label2_2, label2_3, label2_4, label2_warning, label2_5, label2_6;
-    private JLabel label2_5_des, label2_6_des;
-    private JLabel label3_1, label3_2, label3_3_1, label3_3_2, label3_4, label3_5, label3_6;
-    private JLabel label3_4_des, label3_5_des, label3_6_des;
-    private JLabel label4_1, label4_2, label4_3, label4_4, label4_5, label4_6;
-    private JLabel label5_1, label5_2, label5_3, label5_4, label5_4_des, label5_5, label5_6;
-    private JLabel label6_1, label6_2, label6_3, label6_4, label6_5, label6_6;
-    private JLabel label7_1, label7_2, label7_3;
+    private JLabel infoLabel;
+    private JLabel inputPathLabel, outputPathLabel, inputStringLabel, outputStringLabel, replaceRegexTips, replacelineLabel, ingoreCharsLabel;
+    private JLabel replaceSynaxTips, replaceIngoreTips;
+    private JLabel replaceSkipLabel, insertStringLabel, keyFilterLabel;
+    private JLabel keyFilterTips;
+    private JLabel oldenLangLabel, oldzhLangLabel, newenLangLabel, newzhLangLabel, updateModeTips, additionModeLabel;
+    private JLabel cleanAfterStringLabel, cleanKeepStringLabel, cleanUpdateInfoLabel;
+    private JLabel orginenLangLabel, undonezhLangLabel, processzhLangLabel, replaceModeLabel;
+    private JLabel inputenStatLangLabel, statOutpathLabel, statFilterLabel;
     // private JList list1,list2; //to-do: auto-merge
     private JTabbedPane tabbedPane;
     private JTextField textField2_1, textField2_2, textField2_3, textField2_4, textField2_5, textField2_6;
@@ -61,26 +49,37 @@ public class MainFrame extends JFrame implements ActionListener {
     private JTextField textField5_1, textField5_2, textField5_3, textField5_4;
     private JTextField textField6_1, textField6_2, textField6_3, textField6_4;
     private JTextField textField7_1, textField7_2, textField7_3;
-    private JRadioButton radioButton4_5_1, radioButton4_5_2, radioButton4_5_3, radioButton4_5_4, radioButton4_5_5;
-    private JRadioButton radioButton6_5_1, radioButton6_5_2;
-    private JCheckBox checkBox4_6_1, checkBox4_6_2, checkBox5_4, checkBox5_5, checkBox6_6;
-    private ButtonGroup buttongroup4, buttongroup6;
+    private JRadioButton updateMode1Button, updateMode2Button, updateMode3Button, updateMode4Button, updateMode5Button;
+    private JRadioButton replaceMode1Button, replaceMode2Button;
+    private JCheckBox checkModeCheckBox, displayChangeCheckBox, keepStringCheckBox, cleanUpdateInfoCheckBox, checkModeCheckBox2;
+    private ButtonGroup updateModebuttongroup, replaceModeButtongroup;
+    private FileDialog filedialog_open;
+
+    public MainFrame() {
+        super("Localization Assistant v1.7.0-alpha1");
+        setSize(592, 640);
+        setVisible(true);
+        start();
+    }
+
+    // main函数
+    public static void main(String[] args) {
+        new MainFrame();
+    }
 
     // 在构造方法中实现LA所有GUI的布置
-    public MainFrame() {
-        super("Localization Assistant v1.6.3");
-        setSize(592, 640);
+    public void start() {
 
         // panels
-        panel1 = new JPanel();
-        panel2 = new JPanel();
-        panel3 = new JPanel();
-        panel4 = new JPanel();
-        panel5 = new JPanel();
-        panel6 = new JPanel();
-        panel7 = new JPanel();
-        panel1_1 = new JPanel();
-        panel1_2 = new JPanel();
+        infoPanel = new JPanel();
+        replacePanel = new JPanel();
+        insertPanel = new JPanel();
+        renewPanel = new JPanel();
+        conditionDeletePanel = new JPanel();
+        translationReplacePanel = new JPanel();
+        wordRatePanel = new JPanel();
+        infoHolder = new JPanel();
+        exitHolder = new JPanel();
         panel2_1 = new JPanel();
         panel2_2 = new JPanel();
         panel2_3 = new JPanel();
@@ -125,8 +124,8 @@ public class MainFrame extends JFrame implements ActionListener {
         panel7_2 = new JPanel();
         panel7_3 = new JPanel();
         panel7_4 = new JPanel();
-        panel1_1.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panel1_2.setLayout(new FlowLayout(FlowLayout.CENTER));
+        infoHolder.setLayout(new FlowLayout(FlowLayout.CENTER));
+        exitHolder.setLayout(new FlowLayout(FlowLayout.CENTER));
         panel2_1.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel2_2.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel2_3.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -175,17 +174,17 @@ public class MainFrame extends JFrame implements ActionListener {
 
         // TabbedPane
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-        tabbedPane.addTab("基本信息", null, panel1, "关于LA的基本信息");
-        tabbedPane.addTab("条件替换", null, panel2, "根据用户需要，有条件地替换字符串");
-        tabbedPane.addTab("等距添加字符串", null, panel3, "每隔若干个字符就插入某个字符串");
-        tabbedPane.addTab("可用文本更新", null, panel4, "将旧版文本中可用的译文自动更新到新版文本中");
-        tabbedPane.addTab("逐行条件清理", null, panel5, "删除指定字符串后该行的所有内容或清理变更信息");
-        tabbedPane.addTab("已译词条替换", null, panel6, "用已经翻译的词条替换未翻译的部分内容");
-        tabbedPane.addTab("高频词汇统计", null, panel7, "统计英文文本中的高频词汇");
+        tabbedPane.addTab("基本信息", null, infoPanel, "关于LA的基本信息");
+        tabbedPane.addTab("条件替换", null, replacePanel, "根据用户需要，有条件地替换字符串");
+        tabbedPane.addTab("等距添加字符串", null, insertPanel, "每隔若干个字符就插入某个字符串");
+        tabbedPane.addTab("可用文本更新", null, renewPanel, "将旧版文本中可用的译文自动更新到新版文本中");
+        tabbedPane.addTab("逐行条件清理", null, conditionDeletePanel, "删除指定字符串后该行的所有内容或清理变更信息");
+        tabbedPane.addTab("已译词条替换", null, translationReplacePanel, "用已经翻译的词条替换未翻译的部分内容");
+        tabbedPane.addTab("高频词汇统计", null, wordRatePanel, "统计英文文本中的高频词汇");
 
         // Buttons
         button1 = new JButton("Open");
-        button2 = new JButton("Exit");
+        exitButton = new JButton("Exit");
         button2_go = new JButton("Go");
         button2_go.setSize(50, 50);
         button3_go = new JButton("Go");
@@ -215,7 +214,7 @@ public class MainFrame extends JFrame implements ActionListener {
         button7_open1 = new JButton("Open");
         button7_open2 = new JButton("Open");
         button1.addActionListener(this);
-        button2.addActionListener(this);
+        exitButton.addActionListener(this);
         button2_go.addActionListener(this);
         button2_open1.addActionListener(this);
         button2_open2.addActionListener(this);
@@ -240,51 +239,41 @@ public class MainFrame extends JFrame implements ActionListener {
         button7_open1.addActionListener(this);
         button7_open2.addActionListener(this);
 
+
         // Labels
-        label1_1 = new JLabel();
-        label1_1.setText("<html><body>作者:JJN(GWYOG)<br/>版本号:v1.6.3<br/>日期:2017/3/9</body></html>");
-        label2_1 = new JLabel("待操作文件:");
-        label2_2 = new JLabel("输出到文件:");
-        label2_3 = new JLabel("待替换的字符串:");
-        label2_4 = new JLabel("替换成的字符串:");
-        label2_warning = new JLabel(
-                "<html><body>注意:待替换的字符串可以是正则表达式！！<br/>不清楚的话可以不用管，但是替换\".\"时需要输入\"\\.\"</body></html>");
-        label2_5 = new JLabel("*(此项可为空)  操作行数:");
-        label2_5_des = new JLabel("用\"数字\"或是\"数字-数字\"的形式表示,中间以英文逗号分隔,为空代表操作所有行");
-        label2_6 = new JLabel("*(此项可为空)  替换忽略符:");
-        label2_6_des = new JLabel("该对字符中间将不作替换(以\"-\"分隔,只支持输入一对字符即\"字符-字符\"的形式):");
-        label3_1 = new JLabel("待操作文件:");
-        label3_2 = new JLabel("输出到文件:");
-        label3_3_1 = new JLabel("间隔字符个数:");
-        label3_3_2 = new JLabel("待插入的字符串:");
-        label3_4 = new JLabel("*(此项可为空)  操作行数:");
-        label3_4_des = new JLabel("用\"数字\"或是\"数字-数字\"的形式表示,中间以英文逗号分隔,为空代表操作所有行");
-        label3_5 = new JLabel("*(此项可为空)  Key(即'='前的那部分)过滤器:");
-        label3_5_des = new JLabel("只操作Key中包含该些字符串之一的条目.中间以英文逗号分隔,为空代表无过滤");
-        label3_6 = new JLabel("*(此项可为空)  替换忽略符:");
-        label3_6_des = new JLabel("该对字符中间将不作替换(以\"-\"分隔,只支持输入一对字符即\"字符-字符\"的形式):");
-        label4_1 = new JLabel("旧版本 en_US.lang:");
-        label4_2 = new JLabel("旧版本 zh_CN.lang:");
-        label4_3 = new JLabel("新版本 en_US.lang:");
-        label4_4 = new JLabel("输出到文件(新版本 zh_CN.lang):");
-        label4_5 = new JLabel("更新方式(1表示比较\"=\"前的部分,2表示比较\"=\"后的部分):");
-        label4_6 = new JLabel("附加模式:");
-        label5_1 = new JLabel("待操作文件:");
-        label5_2 = new JLabel("输出到文件:");
-        label5_3 = new JLabel("清空此字符串及其(可改为不及其)后该行的内容:");
-        label5_5 = new JLabel("清空时保留该字符串:");
-        label5_6 = new JLabel("清理更新信息(优先级更高):");
-        label5_4 = new JLabel("*(此项可为空)  操作行数:");
-        label5_4_des = new JLabel("用\"数字\"或是\"数字-数字\"的形式表示,中间以英文逗号分隔,为空代表操作所有行");
-        label6_1 = new JLabel("参考用英文文本en_US.lang:");
-        label6_2 = new JLabel("半成品中文文本zh_CN.lang:");
-        label6_3 = new JLabel("待操作的半成品中文文本zh_CN.lang:");
-        label6_4 = new JLabel("输出到的文件:");
-        label6_5 = new JLabel("替换模式:");
-        label6_6 = new JLabel("附加模式:");
-        label7_1 = new JLabel("待统计高频词汇的en_US.lang");
-        label7_2 = new JLabel("统计结果输出到文件:");
-        label7_3 = new JLabel("统计过滤器(以英文逗号分隔,在此列表中的单词将不纳入统计):");
+        infoLabel = new JLabel();
+        infoLabel.setText("<html><body>作者:JJN(GWYOG)<br/>sandtechnology重构ing....<br/>版本号:v1.7.0-alpha1<br/>日期:2019/12/27</body></html>");
+        inputPathLabel = new JLabel("待操作文件:");
+        outputPathLabel = new JLabel("输出到文件:");
+        inputStringLabel = new JLabel("待替换的字符串:");
+        outputStringLabel = new JLabel("替换成的字符串:");
+        replaceRegexTips = new JLabel("<html><body>注意:待替换的字符串可以是正则表达式！！<br/>不清楚的话可以不用管，但是替换\".\"时需要输入\"\\.\"</body></html>");
+        replacelineLabel = new JLabel("*(此项可为空)  操作行数:");
+        replaceSynaxTips = new JLabel("用\"数字\"或是\"数字-数字\"的形式表示,中间以英文逗号分隔,为空代表操作所有行");
+        ingoreCharsLabel = new JLabel("*(此项可为空)  替换忽略符:");
+        replaceIngoreTips = new JLabel("该对字符中间将不作替换(以\"-\"分隔,只支持输入一对字符即\"字符-字符\"的形式):");
+        replaceSkipLabel = new JLabel("间隔字符个数:");
+        insertStringLabel = new JLabel("待插入的字符串:");
+        replaceSynaxTips = new JLabel("用\"数字\"或是\"数字-数字\"的形式表示,中间以英文逗号分隔,为空代表操作所有行");
+        keyFilterLabel = new JLabel("*(此项可为空)  Key(即'='前的那部分)过滤器:");
+        keyFilterTips = new JLabel("只操作Key中包含该些字符串之一的条目.中间以英文逗号分隔,为空代表无过滤");
+        oldenLangLabel = new JLabel("旧版本 en_US.lang:");
+        oldzhLangLabel = new JLabel("旧版本 zh_CN.lang:");
+        newenLangLabel = new JLabel("新版本 en_US.lang:");
+        newzhLangLabel = new JLabel("输出到文件(新版本 zh_CN.lang):");
+        updateModeTips = new JLabel("更新方式(1表示比较\"=\"前的部分,2表示比较\"=\"后的部分):");
+        additionModeLabel = new JLabel("附加模式:");
+        cleanAfterStringLabel = new JLabel("清空此字符串及其(可改为不及其)后该行的内容:");
+        cleanKeepStringLabel = new JLabel("清空时保留该字符串:");
+        cleanUpdateInfoLabel = new JLabel("清理更新信息(优先级更高):");
+        replacelineLabel = new JLabel("*(此项可为空)  操作行数:");
+        orginenLangLabel = new JLabel("参考用英文文本en_US.lang:");
+        undonezhLangLabel = new JLabel("半成品中文文本zh_CN.lang:");
+        processzhLangLabel = new JLabel("待操作的半成品中文文本zh_CN.lang:");
+        replaceModeLabel = new JLabel("替换模式:");
+        inputenStatLangLabel = new JLabel("待统计高频词汇的en_US.lang");
+        statOutpathLabel = new JLabel("统计结果输出到文件:");
+        statFilterLabel = new JLabel("统计过滤器(以英文逗号分隔,在此列表中的单词将不纳入统计):");
 
         // textFields
         textField2_1 = new JTextField(40);
@@ -316,264 +305,229 @@ public class MainFrame extends JFrame implements ActionListener {
         textField7_1 = new JTextField(40);
         textField7_2 = new JTextField(40);
         textField7_3 = new JTextField(40);
-        this.add(tabbedPane);
+        ContainerUtils.addComponent(this, tabbedPane);
         // contentPane.setBackground(Color.white);
 
         // radioButtons
-        radioButton4_5_1 = new JRadioButton("方式1");
-        radioButton4_5_2 = new JRadioButton("方式2");
-        radioButton4_5_3 = new JRadioButton("先1后2");
-        radioButton4_5_4 = new JRadioButton("先2后1");
-        radioButton4_5_5 = new JRadioButton("完全匹配");
-        radioButton6_5_1 = new JRadioButton("普通替换");
-        radioButton6_5_2 = new JRadioButton("根据\"英文=中文\"格式的文件进行替换");
-        radioButton4_5_1.setSelected(true);
-        radioButton6_5_1.setSelected(true);
-        radioButton4_5_1.addActionListener(this);
-        radioButton4_5_2.addActionListener(this);
-        radioButton4_5_3.addActionListener(this);
-        radioButton4_5_4.addActionListener(this);
-        radioButton4_5_5.addActionListener(this);
-        radioButton6_5_1.addActionListener(this);
-        radioButton6_5_2.addActionListener(this);
-        buttongroup4 = new ButtonGroup();
-        buttongroup6 = new ButtonGroup();
-        buttongroup4.add(radioButton4_5_1);
-        buttongroup4.add(radioButton4_5_2);
-        buttongroup4.add(radioButton4_5_3);
-        buttongroup4.add(radioButton4_5_4);
-        buttongroup4.add(radioButton4_5_5);
-        buttongroup6.add(radioButton6_5_1);
-        buttongroup6.add(radioButton6_5_2);
+        updateMode1Button = new JRadioButton("方式1");
+        updateMode2Button = new JRadioButton("方式2");
+        updateMode3Button = new JRadioButton("先1后2");
+        updateMode4Button = new JRadioButton("先2后1");
+        updateMode5Button = new JRadioButton("完全匹配");
+        replaceMode1Button = new JRadioButton("普通替换");
+        replaceMode2Button = new JRadioButton("根据\"英文=中文\"格式的文件进行替换");
+        updateMode1Button.setSelected(true);
+        replaceMode1Button.setSelected(true);
+        updateMode1Button.addActionListener(this);
+        updateMode2Button.addActionListener(this);
+        updateMode3Button.addActionListener(this);
+        updateMode4Button.addActionListener(this);
+        updateMode5Button.addActionListener(this);
+        replaceMode1Button.addActionListener(this);
+        replaceMode2Button.addActionListener(this);
+        updateModebuttongroup = new ButtonGroup();
+        replaceModeButtongroup = new ButtonGroup();
+        updateModebuttongroup.add(updateMode1Button);
+        updateModebuttongroup.add(updateMode2Button);
+        updateModebuttongroup.add(updateMode3Button);
+        updateModebuttongroup.add(updateMode4Button);
+        updateModebuttongroup.add(updateMode5Button);
+        replaceModeButtongroup.add(replaceMode1Button);
+        replaceModeButtongroup.add(replaceMode2Button);
 
-        // checkBoxs
-        checkBox4_6_1 = new JCheckBox("开启校验模式");
-        checkBox4_6_1.setEnabled(false);
-        checkBox4_6_2 = new JCheckBox("显示变更信息");
-        checkBox4_6_2.setEnabled(false);
-        checkBox5_4 = new JCheckBox("保留该字符串");
-        checkBox5_5 = new JCheckBox("清理更新信息");
-        checkBox6_6 = new JCheckBox("开启校验模式");
+        // CheckBoxs
+        checkModeCheckBox = new JCheckBox("开启校验模式");
+        checkModeCheckBox.setEnabled(false);
+        displayChangeCheckBox = new JCheckBox("显示变更信息");
+        displayChangeCheckBox.setEnabled(false);
+        keepStringCheckBox = new JCheckBox("保留该字符串");
+        cleanUpdateInfoCheckBox = new JCheckBox("清理更新信息");
+        checkModeCheckBox2 = new JCheckBox("开启校验模式");
 
         // First Main Panel
-        // panel1.add(button1);
-        panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
-        panel1.add(Box.createVerticalStrut(170));
-        panel1.add(panel1_1);
-        panel1.add(panel1_2);
-        panel1.add(Box.createVerticalStrut(170));
-        panel1_1.add(label1_1);
-        panel1_2.add(button2);
+        // ContainerUtils.addComponent(panel1,button1);
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(infoPanel, Box.createVerticalStrut(170));
+        ContainerUtils.addComponent(infoPanel, infoHolder);
+        ContainerUtils.addComponent(infoPanel, exitHolder);
+        ContainerUtils.addComponent(infoPanel, Box.createVerticalStrut(170));
+        ContainerUtils.addComponent(infoHolder, infoLabel);
+        ContainerUtils.addComponent(exitHolder, exitButton);
         // Second Main Panel
-        panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
-        panel2.add(panel2_1);
-        panel2_1.add(label2_1);
-        panel2_1.add(button2_open1);
-        panel2_1.add(textField2_1);
-        panel2.add(panel2_2);
-        panel2_2.add(label2_2);
-        panel2_2.add(button2_open2);
-        panel2_2.add(textField2_2);
-        panel2.add(panel2_3);
-        panel2_3.add(panel2_3_1);
-        panel2_3.add(panel2_3_2);
-        panel2_3_1.add(label2_3);
-        panel2_3_1.add(textField2_3);
-        panel2_3_2.add(label2_4);
-        panel2_3_2.add(textField2_4);
-        panel2.add(panel2_warning);
-        panel2_warning.add(label2_warning);
-        panel2.add(panel2_5);
-        panel2_5.add(label2_5);
-        panel2_5.add(label2_5_des);
-        panel2_5.add(textField2_5);
-        panel2.add(panel2_6);
-        panel2_6.add(label2_6);
-        panel2_6.add(label2_6_des);
-        panel2_6.add(textField2_6);
-        panel2.add(panel2_7);
-        panel2_7.add(button2_go);
+        replacePanel.setLayout(new BoxLayout(replacePanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(replacePanel, panel2_1);
+        ContainerUtils.addComponent(panel2_1, inputPathLabel);
+        ContainerUtils.addComponent(panel2_1, button2_open1);
+        ContainerUtils.addComponent(panel2_1, textField2_1);
+        ContainerUtils.addComponent(replacePanel, panel2_2);
+        ContainerUtils.addComponent(panel2_2, outputPathLabel);
+        ContainerUtils.addComponent(panel2_2, button2_open2);
+        ContainerUtils.addComponent(panel2_2, textField2_2);
+        ContainerUtils.addComponent(replacePanel, panel2_3);
+        ContainerUtils.addComponent(panel2_3, panel2_3_1);
+        ContainerUtils.addComponent(panel2_3, panel2_3_2);
+        ContainerUtils.addComponent(panel2_3_1, inputStringLabel);
+        ContainerUtils.addComponent(panel2_3_1, textField2_3);
+        ContainerUtils.addComponent(panel2_3_2, outputStringLabel);
+        ContainerUtils.addComponent(panel2_3_2, textField2_4);
+        ContainerUtils.addComponent(replacePanel, panel2_warning);
+        ContainerUtils.addComponent(panel2_warning, replaceRegexTips);
+        ContainerUtils.addComponent(replacePanel, panel2_5);
+        ContainerUtils.addComponent(panel2_5, replacelineLabel);
+        ContainerUtils.addComponent(panel2_5, replaceSynaxTips);
+        ContainerUtils.addComponent(panel2_5, textField2_5);
+        ContainerUtils.addComponent(replacePanel, panel2_6);
+        ContainerUtils.addComponent(panel2_6, ingoreCharsLabel);
+        ContainerUtils.addComponent(panel2_6, replaceIngoreTips);
+        ContainerUtils.addComponent(panel2_6, textField2_6);
+        ContainerUtils.addComponent(replacePanel, panel2_7);
+        ContainerUtils.addComponent(panel2_7, button2_go);
         // Third Main Panel
-        panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
-        panel3.add(panel3_1);
-        panel3_1.add(label3_1);
-        panel3_1.add(button3_open1);
-        panel3_1.add(textField3_1);
-        panel3.add(panel3_2);
-        panel3_2.add(label3_2);
-        panel3_2.add(button3_open2);
-        panel3_2.add(textField3_2);
-        panel3.add(panel3_3);
-        panel3_3.add(panel3_3_1);
-        panel3_3.add(panel3_3_2);
-        panel3_3_1.add(label3_3_1);
-        panel3_3_1.add(textField3_3_1);
-        panel3_3_2.add(label3_3_2);
-        panel3_3_2.add(textField3_3_2);
-        panel3.add(panel3_4);
-        panel3_4.add(label3_4);
-        panel3_4.add(label3_4_des);
-        panel3_4.add(textField3_4);
-        panel3.add(panel3_5);
-        panel3_5.add(label3_5);
-        panel3_5.add(label3_5_des);
-        panel3_5.add(textField3_5);
-        panel3.add(panel3_6);
-        panel3_6.add(label3_6);
-        panel3_6.add(label3_6_des);
-        panel3_6.add(textField3_6);
-        panel3.add(panel3_7);
-        panel3_7.add(button3_go);
+        insertPanel.setLayout(new BoxLayout(insertPanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(insertPanel, panel3_1);
+        ContainerUtils.addComponent(panel3_1, inputPathLabel);
+        ContainerUtils.addComponent(panel3_1, button3_open1);
+        ContainerUtils.addComponent(panel3_1, textField3_1);
+        ContainerUtils.addComponent(insertPanel, panel3_2);
+        ContainerUtils.addComponent(panel3_2, outputPathLabel);
+        ContainerUtils.addComponent(panel3_2, button3_open2);
+        ContainerUtils.addComponent(panel3_2, textField3_2);
+        ContainerUtils.addComponent(insertPanel, panel3_3);
+        ContainerUtils.addComponent(panel3_3, panel3_3_1);
+        ContainerUtils.addComponent(panel3_3, panel3_3_2);
+        ContainerUtils.addComponent(panel3_3_1, replaceSkipLabel);
+        ContainerUtils.addComponent(panel3_3_1, textField3_3_1);
+        ContainerUtils.addComponent(panel3_3_2, insertStringLabel);
+        ContainerUtils.addComponent(panel3_3_2, textField3_3_2);
+        ContainerUtils.addComponent(insertPanel, panel3_4);
+        ContainerUtils.addComponent(panel3_4, replacelineLabel);
+        ContainerUtils.addComponent(panel3_4, replaceSynaxTips);
+        ContainerUtils.addComponent(panel3_4, textField3_4);
+        ContainerUtils.addComponent(insertPanel, panel3_5);
+        ContainerUtils.addComponent(panel3_5, keyFilterLabel);
+        ContainerUtils.addComponent(panel3_5, keyFilterTips);
+        ContainerUtils.addComponent(panel3_5, textField3_5);
+        ContainerUtils.addComponent(insertPanel, panel3_6);
+        ContainerUtils.addComponent(panel3_6, ingoreCharsLabel);
+        ContainerUtils.addComponent(panel3_6, replaceIngoreTips);
+        ContainerUtils.addComponent(panel3_6, textField3_6);
+        ContainerUtils.addComponent(insertPanel, panel3_7);
+        ContainerUtils.addComponent(panel3_7, button3_go);
         // Fourth Main Panel
-        panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
-        panel4.add(panel4_1);
-        panel4_1.add(label4_1);
-        panel4_1.add(button4_open1);
-        panel4_1.add(textField4_1);
-        panel4.add(panel4_2);
-        panel4_2.add(label4_2);
-        panel4_2.add(button4_open2);
-        panel4_2.add(textField4_2);
-        panel4.add(panel4_3);
-        panel4_3.add(label4_3);
-        panel4_3.add(button4_open3);
-        panel4_3.add(textField4_3);
-        panel4.add(panel4_4);
-        panel4_4.add(label4_4);
-        panel4_4.add(button4_open4);
-        panel4_4.add(textField4_4);
-        panel4.add(panel4_5);
-        panel4_5.add(label4_5);
-        panel4_5.add(Box.createHorizontalStrut(80));
-        panel4_5.add(radioButton4_5_1);
-        panel4_5.add(radioButton4_5_2);
-        panel4_5.add(radioButton4_5_3);
-        panel4_5.add(radioButton4_5_4);
-        panel4_5.add(radioButton4_5_5);
-        panel4.add(panel4_6);
-        panel4_6.add(label4_6);
-        panel4_6.add(checkBox4_6_1);
-        panel4_6.add(checkBox4_6_2);
-        panel4.add(panel4_7);
-        panel4_7.add(button4_go);
-        panel4.add(Box.createVerticalStrut(100));
+        renewPanel.setLayout(new BoxLayout(renewPanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(renewPanel, panel4_1);
+        ContainerUtils.addComponent(panel4_1, oldenLangLabel);
+        ContainerUtils.addComponent(panel4_1, button4_open1);
+        ContainerUtils.addComponent(panel4_1, textField4_1);
+        ContainerUtils.addComponent(renewPanel, panel4_2);
+        ContainerUtils.addComponent(panel4_2, oldzhLangLabel);
+        ContainerUtils.addComponent(panel4_2, button4_open2);
+        ContainerUtils.addComponent(panel4_2, textField4_2);
+        ContainerUtils.addComponent(renewPanel, panel4_3);
+        ContainerUtils.addComponent(panel4_3, newenLangLabel);
+        ContainerUtils.addComponent(panel4_3, button4_open3);
+        ContainerUtils.addComponent(panel4_3, textField4_3);
+        ContainerUtils.addComponent(renewPanel, panel4_4);
+        ContainerUtils.addComponent(panel4_4, newzhLangLabel);
+        ContainerUtils.addComponent(panel4_4, button4_open4);
+        ContainerUtils.addComponent(panel4_4, textField4_4);
+        ContainerUtils.addComponent(renewPanel, panel4_5);
+        ContainerUtils.addComponent(panel4_5, updateModeTips);
+        ContainerUtils.addComponent(panel4_5, Box.createHorizontalStrut(80));
+        ContainerUtils.addComponent(panel4_5, updateMode1Button);
+        ContainerUtils.addComponent(panel4_5, updateMode2Button);
+        ContainerUtils.addComponent(panel4_5, updateMode3Button);
+        ContainerUtils.addComponent(panel4_5, updateMode4Button);
+        ContainerUtils.addComponent(panel4_5, updateMode5Button);
+        ContainerUtils.addComponent(renewPanel, panel4_6);
+        ContainerUtils.addComponent(panel4_6, additionModeLabel);
+        ContainerUtils.addComponent(panel4_6, checkModeCheckBox);
+        ContainerUtils.addComponent(panel4_6, displayChangeCheckBox);
+        ContainerUtils.addComponent(renewPanel, panel4_7);
+        ContainerUtils.addComponent(panel4_7, button4_go);
+        ContainerUtils.addComponent(renewPanel, Box.createVerticalStrut(100));
         // Fifth Main Panel
-        panel5.setLayout(new BoxLayout(panel5, BoxLayout.Y_AXIS));
-        panel5.add(panel5_1);
-        panel5_1.add(label5_1);
-        panel5_1.add(button5_open1);
-        panel5_1.add(textField5_1);
-        panel5.add(panel5_2);
-        panel5_2.add(label5_2);
-        panel5_2.add(button5_open2);
-        panel5_2.add(textField5_2);
-        panel5.add(panel5_3);
-        panel5_3.add(label5_3);
-        panel5_3.add(textField5_3);
-        panel5.add(panel5_4);
-        panel5_4.add(label5_4);
-        panel5_4.add(label5_4_des);
-        panel5_4.add(textField5_4);
-        panel5.add(panel5_5);
-        panel5_5.add(label5_5);
-        panel5_5.add(Box.createHorizontalStrut(30));
-        panel5_5.add(checkBox5_4);
-        panel5.add(panel5_6);
-        panel5_6.add(label5_6);
-        panel5_6.add(checkBox5_5);
-        panel5.add(panel5_7);
-        panel5_7.add(button5_go);
-        panel5.add(Box.createVerticalStrut(60));
+        conditionDeletePanel.setLayout(new BoxLayout(conditionDeletePanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_1);
+        ContainerUtils.addComponent(panel5_1, inputPathLabel);
+        ContainerUtils.addComponent(panel5_1, button5_open1);
+        ContainerUtils.addComponent(panel5_1, textField5_1);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_2);
+        ContainerUtils.addComponent(panel5_2, outputPathLabel);
+        ContainerUtils.addComponent(panel5_2, button5_open2);
+        ContainerUtils.addComponent(panel5_2, textField5_2);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_3);
+        ContainerUtils.addComponent(panel5_3, cleanAfterStringLabel);
+        ContainerUtils.addComponent(panel5_3, textField5_3);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_4);
+        ContainerUtils.addComponent(panel5_4, replacelineLabel);
+        ContainerUtils.addComponent(panel5_4, replaceSynaxTips);
+        ContainerUtils.addComponent(panel5_4, textField5_4);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_5);
+        ContainerUtils.addComponent(panel5_5, cleanKeepStringLabel);
+        ContainerUtils.addComponent(panel5_5, Box.createHorizontalStrut(30));
+        ContainerUtils.addComponent(panel5_5, keepStringCheckBox);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_6);
+        ContainerUtils.addComponent(panel5_6, cleanUpdateInfoLabel);
+        ContainerUtils.addComponent(panel5_6, cleanUpdateInfoCheckBox);
+        ContainerUtils.addComponent(conditionDeletePanel, panel5_7);
+        ContainerUtils.addComponent(panel5_7, button5_go);
+        ContainerUtils.addComponent(conditionDeletePanel, Box.createVerticalStrut(60));
         // Sixth Main Panel
-        panel6.setLayout(new BoxLayout(panel6, BoxLayout.Y_AXIS));
-        panel6.add(panel6_1);
-        panel6_1.add(label6_1);
-        panel6_1.add(button6_open1);
-        panel6_1.add(textField6_1);
-        panel6.add(panel6_2);
-        panel6_2.add(label6_2);
-        panel6_2.add(button6_open2);
-        panel6_2.add(textField6_2);
-        panel6.add(panel6_3);
-        panel6_3.add(label6_3);
-        panel6_3.add(button6_open3);
-        panel6_3.add(textField6_3);
-        panel6.add(panel6_4);
-        panel6_4.add(label6_4);
-        panel6_4.add(button6_open4);
-        panel6_4.add(textField6_4);
-        panel6.add(panel6_5);
-        panel6_5.add(label6_5);
-        panel6_5.add(radioButton6_5_1);
-        panel6_5.add(radioButton6_5_2);
-        panel6.add(panel6_6);
-        panel6_6.add(label6_6);
-        panel6_6.add(checkBox6_6);
-        panel6.add(panel6_7);
-        panel6_7.add(button6_go);
-        panel6.add(Box.createVerticalStrut(160));
+        translationReplacePanel.setLayout(new BoxLayout(translationReplacePanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(translationReplacePanel, panel6_1);
+        ContainerUtils.addComponent(panel6_1, orginenLangLabel);
+        ContainerUtils.addComponent(panel6_1, button6_open1);
+        ContainerUtils.addComponent(panel6_1, textField6_1);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_2);
+        ContainerUtils.addComponent(panel6_2, undonezhLangLabel);
+        ContainerUtils.addComponent(panel6_2, button6_open2);
+        ContainerUtils.addComponent(panel6_2, textField6_2);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_3);
+        ContainerUtils.addComponent(panel6_3, processzhLangLabel);
+        ContainerUtils.addComponent(panel6_3, button6_open3);
+        ContainerUtils.addComponent(panel6_3, textField6_3);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_4);
+        ContainerUtils.addComponent(panel6_4, outputPathLabel);
+        ContainerUtils.addComponent(panel6_4, button6_open4);
+        ContainerUtils.addComponent(panel6_4, textField6_4);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_5);
+        ContainerUtils.addComponent(panel6_5, replaceModeLabel);
+        ContainerUtils.addComponent(panel6_5, replaceMode1Button);
+        ContainerUtils.addComponent(panel6_5, replaceMode2Button);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_6);
+        ContainerUtils.addComponent(panel6_6, additionModeLabel);
+        ContainerUtils.addComponent(panel6_6, checkModeCheckBox2);
+        ContainerUtils.addComponent(translationReplacePanel, panel6_7);
+        ContainerUtils.addComponent(panel6_7, button6_go);
+        ContainerUtils.addComponent(translationReplacePanel, Box.createVerticalStrut(160));
         // Seventh Main Panel
-        panel7.setLayout(new BoxLayout(panel7, BoxLayout.Y_AXIS));
-        panel7.add(panel7_1);
-        panel7_1.add(label7_1);
-        panel7_1.add(button7_open1);
-        panel7_1.add(textField7_1);
-        panel7.add(panel7_2);
-        panel7_2.add(label7_2);
-        panel7_2.add(button7_open2);
-        panel7_2.add(textField7_2);
-        panel7.add(panel7_3);
-        panel7_3.add(label7_3);
-        panel7_3.add(textField7_3);
-        panel7.add(panel7_4);
-        panel7_4.add(button7_go);
-        panel7.add(Box.createVerticalStrut(300));
+        wordRatePanel.setLayout(new BoxLayout(wordRatePanel, BoxLayout.Y_AXIS));
+        ContainerUtils.addComponent(wordRatePanel, panel7_1);
+        ContainerUtils.addComponent(panel7_1, inputenStatLangLabel);
+        ContainerUtils.addComponent(panel7_1, button7_open1);
+        ContainerUtils.addComponent(panel7_1, textField7_1);
+        ContainerUtils.addComponent(wordRatePanel, panel7_2);
+        ContainerUtils.addComponent(panel7_2, statOutpathLabel);
+        ContainerUtils.addComponent(panel7_2, button7_open2);
+        ContainerUtils.addComponent(panel7_2, textField7_2);
+        ContainerUtils.addComponent(wordRatePanel, panel7_3);
+        ContainerUtils.addComponent(panel7_3, statFilterLabel);
+        ContainerUtils.addComponent(panel7_3, textField7_3);
+        ContainerUtils.addComponent(wordRatePanel, panel7_4);
+        ContainerUtils.addComponent(panel7_4, button7_go);
+        ContainerUtils.addComponent(wordRatePanel, Box.createVerticalStrut(300));
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    // main函数
-    public static void main(String[] args) {
-        new MainFrame();
-    }
-
-    // 自动填充输出文件名
-    public void autoFill(Object objFrom, Object objTo) {
-        if (objFrom instanceof JTextField && objTo instanceof JTextField) {
-            String textFrom = ((JTextField) objFrom).getText();
-            String textFromMain = "";
-            String textFromExtension = "";
-            if (textFrom.indexOf('.') == -1)
-                return;
-            else {
-                textFromMain = textFrom.substring(0, textFrom.lastIndexOf('.'));
-                textFromExtension = textFrom.substring(textFrom.lastIndexOf('.'));
-                int i = 1;
-                boolean tempFlag = textFromMain.indexOf("-Output") != -1;
-                String fileName = "";
-                while (true) {
-                    if (tempFlag)
-                        fileName = textFromMain.substring(0, textFromMain.indexOf("-Output")) + "-Output" + i
-                                + textFromExtension;
-                    else
-                        fileName = textFromMain + "-Output" + i + textFromExtension;
-                    File file = new File(fileName);
-                    if (!file.exists())
-                        break;
-                    i += 1;
-                }
-                ((JTextField) objTo).setText(fileName);
-            }
-        }
     }
 
     // 实现监听到的事件
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-        if (e.getSource() == radioButton4_5_1 || e.getSource() == radioButton4_5_2 || e.getSource() == radioButton4_5_3
-                || e.getSource() == radioButton4_5_4 || e.getSource() == radioButton4_5_5) {
-            if (radioButton4_5_1.isSelected()) {
+        if (e.getSource() == updateMode1Button || e.getSource() == updateMode2Button || e.getSource() == updateMode3Button
+                || e.getSource() == updateMode4Button || e.getSource() == updateMode5Button) {
+            if (updateMode1Button.isSelected()) {
                 textField4_1.setEnabled(false);
                 textField4_1.setText("");
                 button4_open1.setEnabled(false);
@@ -583,225 +537,224 @@ public class MainFrame extends JFrame implements ActionListener {
 
             }
         }
-        if (e.getSource() == radioButton4_5_1 || e.getSource() == radioButton4_5_2 || e.getSource() == radioButton4_5_3
-                || e.getSource() == radioButton4_5_4 || e.getSource() == radioButton4_5_5) {
-            if (radioButton4_5_2.isSelected()) {
-                checkBox4_6_1.setEnabled(true);
-                checkBox4_6_2.setEnabled(true);
-            } else if (radioButton4_5_5.isSelected()) {
-                checkBox4_6_1.setEnabled(false);
-                checkBox4_6_1.setSelected(false);
-                checkBox4_6_2.setEnabled(true);
+        if (e.getSource() == updateMode1Button || e.getSource() == updateMode2Button || e.getSource() == updateMode3Button
+                || e.getSource() == updateMode4Button || e.getSource() == updateMode5Button) {
+            if (updateMode2Button.isSelected()) {
+                checkModeCheckBox.setEnabled(true);
+                displayChangeCheckBox.setEnabled(true);
+            } else if (updateMode5Button.isSelected()) {
+                checkModeCheckBox.setEnabled(false);
+                checkModeCheckBox.setSelected(false);
+                displayChangeCheckBox.setEnabled(true);
             } else {
-                checkBox4_6_1.setEnabled(false);
-                checkBox4_6_1.setSelected(false);
-                checkBox4_6_2.setEnabled(false);
-                checkBox4_6_2.setSelected(false);
+                checkModeCheckBox.setEnabled(false);
+                checkModeCheckBox.setSelected(false);
+                displayChangeCheckBox.setEnabled(false);
+                displayChangeCheckBox.setSelected(false);
             }
         }
-        if (e.getSource() == radioButton6_5_1) {
-            label6_1.setText("参考用英文文本en_US.lang:");
+        if (e.getSource() == replaceMode1Button) {
+            orginenLangLabel.setText("参考用英文文本en_US.lang:");
             textField6_2.setEnabled(true);
             button6_open2.setEnabled(true);
-        } else if (e.getSource() == radioButton6_5_2) {
-            label6_1.setText("每行为\"英文=中文\"形式的utf-8编码文件:");
+        } else if (e.getSource() == replaceMode2Button) {
+            orginenLangLabel.setText("每行为\"英文=中文\"形式的utf-8编码文件:");
             textField6_2.setText("");
             textField6_2.setEnabled(false);
             button6_open2.setEnabled(false);
         }
-        if (command == "Open") {
-            filedialog_open = new FileDialog(this, "打开文件", FileDialog.LOAD);
-            filedialog_open.setVisible(true);
-            String directory = filedialog_open.getDirectory();
-            String filename = filedialog_open.getFile();
-            if (e.getSource() == button1) {
-                System.out.println(directory + filename);
-            } else if (e.getSource() == button2_open1) {
-                if (directory != null && filename != null)
-                    textField2_1.setText(directory + filename);
-                autoFill(textField2_1, textField2_2);
-            } else if (e.getSource() == button2_open2) {
-                if (directory != null && filename != null)
-                    textField2_2.setText(directory + filename);
-            } else if (e.getSource() == button3_open1) {
-                if (directory != null && filename != null)
-                    textField3_1.setText(directory + filename);
-                autoFill(textField3_1, textField3_2);
-            } else if (e.getSource() == button3_open2) {
-                if (directory != null && filename != null)
-                    textField3_2.setText(directory + filename);
-            } else if (e.getSource() == button4_open1) {
-                if (directory != null && filename != null)
-                    textField4_1.setText(directory + filename);
-            } else if (e.getSource() == button4_open2) {
-                if (directory != null && filename != null)
-                    textField4_2.setText(directory + filename);
-                autoFill(textField4_2, textField4_4);
-            } else if (e.getSource() == button4_open3) {
-                if (directory != null && filename != null)
-                    textField4_3.setText(directory + filename);
-            } else if (e.getSource() == button4_open4) {
-                if (directory != null && filename != null)
-                    textField4_4.setText(directory + filename);
-            } else if (e.getSource() == button5_open1) {
-                if (directory != null && filename != null)
-                    textField5_1.setText(directory + filename);
-                autoFill(textField5_1, textField5_2);
-            } else if (e.getSource() == button5_open2) {
-                if (directory != null && filename != null)
-                    textField5_2.setText(directory + filename);
-            } else if (e.getSource() == button6_open1) {
-                if (directory != null && filename != null)
-                    textField6_1.setText(directory + filename);
-            } else if (e.getSource() == button6_open2) {
-                if (directory != null && filename != null)
-                    textField6_2.setText(directory + filename);
-            } else if (e.getSource() == button6_open3) {
-                if (directory != null && filename != null)
-                    textField6_3.setText(directory + filename);
-                autoFill(textField6_3, textField6_4);
-            } else if (e.getSource() == button6_open4) {
-                if (directory != null && filename != null)
-                    textField6_4.setText(directory + filename);
-            } else if (e.getSource() == button7_open1) {
-                if (directory != null && filename != null)
-                    textField7_1.setText(directory + filename);
-                autoFill(textField7_1, textField7_2);
-            } else if (e.getSource() == button7_open2) {
-                if (directory != null && filename != null)
-                    textField7_2.setText(directory + filename);
-            }
-        } else if (command == "Exit")
-            System.exit(0);
-        else if (command == "Go") {
-            if (e.getSource() == button2_go) {
-                String fileInput = textField2_1.getText();
-                String fileOutput = textField2_2.getText();
-                String sOrigin = textField2_3.getText();
-                String sTo = textField2_4.getText();
-                if (textField2_5.getText().indexOf("，") == -1) {
-                    String[] rowNumberSplit = { "Blank" };
-                    if (!textField2_5.getText().trim().equals(""))
-                        rowNumberSplit = textField2_5.getText().split(",");
-                    String[] specialIgnoreSymbol = textField2_6.getText().split("-");
-                    if (textField2_6.getText().length() != 3 && textField2_6.getText().length() != 0
-                            && (!(textField2_6.getText().length() == 3 && specialIgnoreSymbol.length != 2)))
-                        new MessageWindow(this, "错误！", "替换忽略符输入格式错误！", -1);
-                    else {
-                        if (!textField2_1.getText().isEmpty())
-                            if (!textField2_1.getText().equals(textField2_2.getText())
-                                    || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？",
-                                            "确认是否继续", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                                            null, null) == 0) {
-                                FileModifier fileModifier = new FileModifier(this, 1, fileInput, fileOutput, sOrigin,
-                                        sTo, null, rowNumberSplit, specialIgnoreSymbol);
-                                fileModifier.functionConditionalReplace();
-                            }
-                    }
-                } else
-                    new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
-            } else if (e.getSource() == button3_go) {
-                String fileInput = textField3_1.getText();
-                String fileOutput = textField3_2.getText();
-                String sInterval = textField3_3_1.getText();
-                String sAdd = textField3_3_2.getText();
-                if (textField3_4.getText().indexOf("，") == -1 && textField3_5.getText().indexOf("，") == -1) {
-                    String[] rowNumberSplit = { "Blank" };
-                    if (!textField3_4.getText().trim().equals(""))
-                        rowNumberSplit = textField3_4.getText().split(",");
-                    String[] keyFilter = textField3_5.getText().split(",");
-                    String[] specialIgnoreSymbol = textField3_6.getText().split("-");
-                    if (textField3_6.getText().length() != 3 && textField3_6.getText().length() != 0
-                            && (!(textField3_6.getText().length() == 3 && specialIgnoreSymbol.length != 2)))
-                        new MessageWindow(this, "错误！", "替换忽略符输入格式错误！", -1);
-                    else {
-                        if (!textField3_1.getText().isEmpty())
-                            if (!textField3_1.getText().equals(textField3_2.getText())
-                                    || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？",
-                                            "确认是否继续", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                                            null, null) == 0) {
-                                FileModifier fileModifier = new FileModifier(this, 2, fileInput, fileOutput, sInterval,
-                                        sAdd, keyFilter, rowNumberSplit, specialIgnoreSymbol);
-                                fileModifier.functionAdd();
-                            }
-                    }
-                } else
-                    new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
-            } else if (e.getSource() == button4_go) {
-                String fileInput1 = textField4_1.getText();
-                String fileInput2 = textField4_2.getText();
-                String fileInput3 = textField4_3.getText();
-                String fileOutput = textField4_4.getText();
-                int updateType = radioButton4_5_1.isSelected() ? 1
-                        : radioButton4_5_2.isSelected() ? 2
-                                : radioButton4_5_3.isSelected() ? 3
-                                        : radioButton4_5_4.isSelected() ? 4 : radioButton4_5_5.isSelected() ? 5 : -1;
-                int checkModeStatus = (updateType == 2 && checkBox4_6_1.isSelected()) ? 1 : 0;
-                int informationModeStatus = ((updateType == 2 || updateType == 5) && checkBox4_6_2.isSelected()) ? 1
-                        : 0;
-                updateType = updateType * 100 + checkModeStatus * 10 + informationModeStatus;
-                if (!textField4_2.getText().isEmpty())
-                    if (!textField4_2.getText().equals(textField4_4.getText())
-                            || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续",
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
-                        FileModifier fileModifier = new FileModifier(this, fileInput1, fileInput2, fileInput3,
-                                fileOutput, updateType);
-                        fileModifier.functionUpdateLocalization();
-                    }
-            } else if (e.getSource() == button5_go) {
-                String fileInput1 = textField5_1.getText();
-                String fileOutput = textField5_2.getText();
-                String sRemoveFlag = textField5_3.getText();
-                int flag1 = checkBox5_4.isSelected() ? 1 : 0;
-                int flag2 = checkBox5_5.isSelected() ? 1 : 0;
-                if (textField5_4.getText().indexOf("，") == -1) {
-                    String[] rowNumberSplit = { "Blank" };
-                    if (!textField5_4.getText().trim().equals(""))
-                        rowNumberSplit = textField5_4.getText().split(",");
-                    if (!textField5_1.getText().isEmpty())
-                        if (!textField5_1.getText().equals(textField5_2.getText())
+        switch (command) {
+            case "Open":
+                filedialog_open = new FileDialog(this, "打开文件", FileDialog.LOAD);
+                filedialog_open.setVisible(true);
+                String directory = filedialog_open.getDirectory();
+                String filename = filedialog_open.getFile();
+                if (e.getSource() == button1) {
+                    System.out.println(directory + filename);
+                } else if (e.getSource() == button2_open1) {
+                    if (directory != null && filename != null)
+                        textField2_1.setText(directory + filename);
+                    ContainerUtils.autoFill(textField2_1, textField2_2);
+                } else if (e.getSource() == button2_open2) {
+                    if (directory != null && filename != null)
+                        textField2_2.setText(directory + filename);
+                } else if (e.getSource() == button3_open1) {
+                    if (directory != null && filename != null)
+                        textField3_1.setText(directory + filename);
+                    ContainerUtils.autoFill(textField3_1, textField3_2);
+                } else if (e.getSource() == button3_open2) {
+                    if (directory != null && filename != null)
+                        textField3_2.setText(directory + filename);
+                } else if (e.getSource() == button4_open1) {
+                    if (directory != null && filename != null)
+                        textField4_1.setText(directory + filename);
+                } else if (e.getSource() == button4_open2) {
+                    if (directory != null && filename != null)
+                        textField4_2.setText(directory + filename);
+                    ContainerUtils.autoFill(textField4_2, textField4_4);
+                } else if (e.getSource() == button4_open3) {
+                    if (directory != null && filename != null)
+                        textField4_3.setText(directory + filename);
+                } else if (e.getSource() == button4_open4) {
+                    if (directory != null && filename != null)
+                        textField4_4.setText(directory + filename);
+                } else if (e.getSource() == button5_open1) {
+                    if (directory != null && filename != null)
+                        textField5_1.setText(directory + filename);
+                    ContainerUtils.autoFill(textField5_1, textField5_2);
+                } else if (e.getSource() == button5_open2) {
+                    if (directory != null && filename != null)
+                        textField5_2.setText(directory + filename);
+                } else if (e.getSource() == button6_open1) {
+                    if (directory != null && filename != null)
+                        textField6_1.setText(directory + filename);
+                } else if (e.getSource() == button6_open2) {
+                    if (directory != null && filename != null)
+                        textField6_2.setText(directory + filename);
+                } else if (e.getSource() == button6_open3) {
+                    if (directory != null && filename != null)
+                        textField6_3.setText(directory + filename);
+                    ContainerUtils.autoFill(textField6_3, textField6_4);
+                } else if (e.getSource() == button6_open4) {
+                    if (directory != null && filename != null)
+                        textField6_4.setText(directory + filename);
+                } else if (e.getSource() == button7_open1) {
+                    if (directory != null && filename != null)
+                        textField7_1.setText(directory + filename);
+                    ContainerUtils.autoFill(textField7_1, textField7_2);
+                } else if (e.getSource() == button7_open2) {
+                    if (directory != null && filename != null)
+                        textField7_2.setText(directory + filename);
+                }
+                break;
+            case "Exit":
+                System.exit(0);
+            case "Go":
+                if (e.getSource() == button2_go) {
+                    String fileInput = textField2_1.getText();
+                    String fileOutput = textField2_2.getText();
+                    String sOrigin = textField2_3.getText();
+                    String sTo = textField2_4.getText();
+                    if (!textField2_5.getText().contains("，")) {
+                        String[] rowNumberSplit = {"Blank"};
+                        if (!textField2_5.getText().trim().equals(""))
+                            rowNumberSplit = textField2_5.getText().split(",");
+                        String[] specialIgnoreSymbol = textField2_6.getText().split("-");
+                        if (textField2_6.getText().length() != 3 && textField2_6.getText().length() != 0
+                                && (!(textField2_6.getText().length() == 3 && specialIgnoreSymbol.length != 2)))
+                            new MessageWindow(this, "错误！", "替换忽略符输入格式错误！", -1);
+                        else {
+                            if (!textField2_1.getText().isEmpty())
+                                if (!textField2_1.getText().equals(textField2_2.getText())
+                                        || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？",
+                                        "确认是否继续", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                                        null, null) == 0) {
+                                    FileModifier.conditionalReplace(this, fileInput, fileOutput, new FileModifier.StartAndEndHolder(sOrigin, sTo), specialIgnoreSymbol.length == 2 ? new FileModifier.StartAndEndHolder(specialIgnoreSymbol[0], specialIgnoreSymbol[1]) : null);
+                                }
+                        }
+                    } else
+                        new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
+                } else if (e.getSource() == button3_go) {
+                    String fileInput = textField3_1.getText();
+                    String fileOutput = textField3_2.getText();
+                    String sInterval = textField3_3_1.getText();
+                    String sAdd = textField3_3_2.getText();
+                    if (!textField3_4.getText().contains("，") && !textField3_5.getText().contains("，")) {
+                        String[] rowNumberSplit = {"Blank"};
+                        if (!textField3_4.getText().trim().equals(""))
+                            rowNumberSplit = textField3_4.getText().split(",");
+                        String[] keyFilter = textField3_5.getText().split(",");
+                        String[] specialIgnoreSymbol = textField3_6.getText().split("-");
+                        if (textField3_6.getText().length() != 3 && textField3_6.getText().length() != 0
+                                && (!(textField3_6.getText().length() == 3 && specialIgnoreSymbol.length != 2)))
+                            new MessageWindow(this, "错误！", "替换忽略符输入格式错误！", -1);
+                        else {
+                            if (!textField3_1.getText().isEmpty())
+                                if (!textField3_1.getText().equals(textField3_2.getText())
+                                        || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？",
+                                        "确认是否继续", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                                        null, null) == 0) {
+                                    FileModifier fileModifier = new FileModifier(this, 2, fileInput, fileOutput, sInterval,
+                                            sAdd, keyFilter, rowNumberSplit, specialIgnoreSymbol);
+                                    fileModifier.functionAdd();
+                                }
+                        }
+                    } else
+                        new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
+                } else if (e.getSource() == button4_go) {
+                    String fileInput1 = textField4_1.getText();
+                    String fileInput2 = textField4_2.getText();
+                    String fileInput3 = textField4_3.getText();
+                    String fileOutput = textField4_4.getText();
+                    int updateType = updateMode1Button.isSelected() ? 1
+                            : updateMode2Button.isSelected() ? 2
+                            : updateMode3Button.isSelected() ? 3
+                            : updateMode4Button.isSelected() ? 4 : updateMode5Button.isSelected() ? 5 : -1;
+                    int checkModeStatus = (updateType == 2 && checkModeCheckBox.isSelected()) ? 1 : 0;
+                    int informationModeStatus = ((updateType == 2 || updateType == 5) && displayChangeCheckBox.isSelected()) ? 1
+                            : 0;
+                    updateType = updateType * 100 + checkModeStatus * 10 + informationModeStatus;
+                    if (!textField4_2.getText().isEmpty())
+                        if (!textField4_2.getText().equals(textField4_4.getText())
                                 || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续",
-                                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
-                            FileModifier fileModifier = new FileModifier(this, fileInput1, fileOutput, sRemoveFlag,
-                                    rowNumberSplit, flag1 * 10 + flag2);
-                            fileModifier.functionConditionalRemove();
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
+                            FileModifier fileModifier = new FileModifier(this, fileInput1, fileInput2, fileInput3,
+                                    fileOutput, updateType);
+                            fileModifier.functionUpdateLocalization();
                         }
-                } else
-                	new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
-            } else if (e.getSource() == button6_go) {
-                String fileInput1 = textField6_1.getText();
-                String fileInput2 = textField6_2.getText();
-                String fileInput3 = textField6_3.getText();
-                String fileOutput = textField6_4.getText();
-                int updateType = radioButton6_5_1.isSelected() ? 0 : 1;
-                int checkModeStatus = checkBox6_6.isSelected() ? 1 : 0;
-                if (updateType == 1 || !textField6_2.getText().isEmpty())
-                    if (!textField6_2.getText().equals(textField6_4.getText())
-                            || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续",
+                } else if (e.getSource() == button5_go) {
+                    String fileInput1 = textField5_1.getText();
+                    String fileOutput = textField5_2.getText();
+                    String sRemoveFlag = textField5_3.getText();
+                    int flag1 = keepStringCheckBox.isSelected() ? 1 : 0;
+                    int flag2 = cleanUpdateInfoCheckBox.isSelected() ? 1 : 0;
+                    if (!textField5_4.getText().contains("，")) {
+                        String[] rowNumberSplit = {"Blank"};
+                        if (!textField5_4.getText().trim().equals(""))
+                            rowNumberSplit = textField5_4.getText().split(",");
+                        if (!textField5_1.getText().isEmpty())
+                            if (!textField5_1.getText().equals(textField5_2.getText())
+                                    || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续",
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
-                        FileModifier fileModifier = new FileModifier(this, fileInput1, fileInput2, fileInput3,
-                                fileOutput, updateType * 10 + checkModeStatus);
-                        fileModifier.functionAutoReplaceEnglishTextWithChineseTranslation();
-                    }
-            } else if (e.getSource() == button7_go) {
-                String fileInput1 = textField7_1.getText();
-                String fileOutput = textField7_2.getText();
-                if (textField7_3.getText().indexOf("，") == -1) {
-                    String[] filter;
-                    filter = textField7_3.getText().split(",");
-                    if (!textField7_1.getText().isEmpty())
-                        if (!textField7_1.getText().equals(textField7_2.getText()) || JOptionPane.showOptionDialog(null,
-                                "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
-                            FileModifier fileModifier = new FileModifier(this, fileInput1, fileOutput, filter);
-                            fileModifier.functionWordCount();
+                                FileModifier fileModifier = new FileModifier(this, fileInput1, fileOutput, sRemoveFlag,
+                                        rowNumberSplit, flag1 * 10 + flag2);
+                                fileModifier.functionConditionalRemove();
+                            }
+                    } else
+                        new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
+                } else if (e.getSource() == button6_go) {
+                    String fileInput1 = textField6_1.getText();
+                    String fileInput2 = textField6_2.getText();
+                    String fileInput3 = textField6_3.getText();
+                    String fileOutput = textField6_4.getText();
+                    int updateType = replaceMode1Button.isSelected() ? 0 : 1;
+                    int checkModeStatus = checkModeCheckBox2.isSelected() ? 1 : 0;
+                    if (updateType == 1 || !textField6_2.getText().isEmpty())
+                        if (!textField6_2.getText().equals(textField6_4.getText())
+                                || JOptionPane.showOptionDialog(null, "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
+                            FileModifier fileModifier = new FileModifier(this, fileInput1, fileInput2, fileInput3,
+                                    fileOutput, updateType * 10 + checkModeStatus);
+                            fileModifier.functionAutoReplaceEnglishTextWithChineseTranslation();
                         }
-                } else
-                    new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
-            }
+                } else if (e.getSource() == button7_go) {
+                    String fileInput1 = textField7_1.getText();
+                    String fileOutput = textField7_2.getText();
+                    if (!textField7_3.getText().contains("，")) {
+                        String[] filter;
+                        filter = textField7_3.getText().split(",");
+                        if (!textField7_1.getText().isEmpty())
+                            if (!textField7_1.getText().equals(textField7_2.getText()) || JOptionPane.showOptionDialog(null,
+                                    "系统检测到您的输入和输出是同一个文件，这样可能会导致数据丢失，请问是否继续？", "确认是否继续", JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.WARNING_MESSAGE, null, null, null) == 0) {
+                                FileModifier fileModifier = new FileModifier(this, fileInput1, fileOutput, filter);
+                                fileModifier.functionWordCount();
+                            }
+                    } else
+                        new MessageWindow(this, "错误！", "错误,请使用英文逗号分隔！", -1);
+                }
+                break;
         }
     }
-
-    private FileDialog filedialog_open;
 
 }
