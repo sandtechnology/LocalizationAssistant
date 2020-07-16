@@ -1,5 +1,7 @@
 language: java
 
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script: mvn test -B
 matrix:
   include:
-    - jdk: oraclejdk8
+    - jdk: openjdk8
