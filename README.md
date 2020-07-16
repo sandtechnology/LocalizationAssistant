@@ -1,5 +1,5 @@
 # LocalizationAssistantReloaded
-[![Build Status](https://travis-ci.org/GWYOG/LocalizationAssistant.png)](https://travis-ci.org/GWYOG/LocalizationAssistant)  
+[![Build Status](https://api.travis-ci.com/sandtechnology/LocalizationAssistant.svg)](https://travis-ci.com/github/sandtechnology/LocalizationAssistant)  
 It doesn't support i18n at this moment, so the following README is written in Chinese.
 
 ### What's this?
@@ -7,7 +7,7 @@ It doesn't support i18n at this moment, so the following README is written in Ch
 
 LocalizationAssistantReloaded是LocalizationAssistant的继任者，其目标是让该软件支持1.13+的新版本Json格式。
 目前已经让条件替换和可用文本更新功能同时支持Json和lang两种格式，更多的功能正在重构中。
-以下是原项目的说明，同样适用于LocalizationAssistantReloaded。
+以下是原项目的说明，根据具体情况进行了少量的修改，同样适用于LocalizationAssistantReloaded。
 
 ### Why it's better than scripts?
 ### 为啥它比脚本好用？
